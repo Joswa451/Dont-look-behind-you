@@ -1,0 +1,34 @@
+
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+.cache/
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+log.txt
+
+# Ren'Py generated files
+game/cache/
+game/saves/
+game/*.rpyc
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated release archives
+release/**/*.zip
+release/**/*.tar.bz2
+!release/windows/DontLookBehindYou-Windows-v1.0.0.zip
+
+# Operating system files
+.DS_Store
+Thumbs.db

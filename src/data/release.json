@@ -1,0 +1,13 @@
+{
+  "title": "DON'T LOOK BEHIND YOU",
+  "version": "1.0.0",
+  "windows": {
+    "downloadUrl": "/downloads/DontLookBehindYou-Windows-v1.0.0.zip",
+    "archivePath": "release/windows/DontLookBehindYou-Windows-v1.0.0.zip",
+    "fileSize": "84.4 MiB",
+    "sha256": "0d1733a95624818affa2e942f5edad55673635d50527acd1afa04ce12e88c048"
+  },
+  "architecture": "x86_64 (64-bit)",
+  "format": "ZIP archive",
+  "supportedOS": "Windows 10 / Windows 11"
+}

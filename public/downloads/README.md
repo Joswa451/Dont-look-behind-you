@@ -1,0 +1,1 @@
+The Windows Desktop Edition is distributed as `DontLookBehindYou-Windows-v1.0.0.zip`. The source archive is kept in `release/windows/` and copied into this directory in the production website build. Include that release archive in the deployment repository so the website download link serves the actual package.
