@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/voice_system.rpy", line 1: expected ':' not found.
+    init -20 python;
+                   ^
+
+Ren'Py Version: Ren'Py 8.3.7.25031702
+Sun Nov 15 13:27:51 2026

@@ -1,5 +1,5 @@
 define config.name = _("DON'T LOOK BEHIND YOU")
-define config.version = "1.0.0"
+define config.version = "1.0.1"
 define gui.show_name = True
 
 define config.save_directory = "dontlookbehindyou-1"
@@ -7,7 +7,7 @@ define config.window_title = "DON'T LOOK BEHIND YOU"
 
 define config.has_sound = True
 define config.has_music = True
-define config.has_voice = False
+define config.has_voice = True
 define config.main_menu_music = "audio/music/music_menu.ogg"
 
 define config.enter_transition = Dissolve(0.35)
@@ -43,6 +43,12 @@ init python:
     build.classify("**/.**", None)
     build.classify("**/#**", None)
     build.classify("**/thumbs.db", None)
+    build.classify("backups/**", None)
+    build.classify("android.keystore", None)
+    build.classify("bundle.keystore", None)
+    build.classify("game/saves/**", None)
+    build.classify("traceback.txt", None)
+    build.classify("log.txt", None)
     # Website sources and release artifacts are not part of the game build.
     build.classify("public/**", None)
     build.classify("src/**", None)

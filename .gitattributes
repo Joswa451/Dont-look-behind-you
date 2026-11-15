@@ -1,0 +1,6 @@
+release/android/*.apk filter=lfs diff=lfs merge=lfs -text
+release/android/*.zip filter=lfs diff=lfs merge=lfs -text
+release/windows/*.zip filter=lfs diff=lfs merge=lfs -text
+backups/*.tar.gz filter=lfs diff=lfs merge=lfs -text
+dist/downloads/*.apk filter=lfs diff=lfs merge=lfs -text
+dist/downloads/*.zip filter=lfs diff=lfs merge=lfs -text

@@ -4,6 +4,9 @@ import SiteHeader from './components/SiteHeader.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
 import HomePage from './pages/HomePage.jsx'
 import PrivacyPage from './pages/PrivacyPage.jsx'
+import PlayPage from './pages/PlayPage.jsx'
+import { release } from './data/site.js'
+import { safeWebPlayerUrl } from './data/urlValidation.js'
 
 function ScrollManager() {
   const location = useLocation()
@@ -24,6 +27,8 @@ function ScrollManager() {
 }
 
 export function AppRoutes() {
+  const webUrl = safeWebPlayerUrl(release.webUrl, typeof window === 'undefined' ? 'https://site.invalid' : window.location.origin)
+
   return (
     <>
       <ScrollManager />
@@ -32,7 +37,7 @@ export function AppRoutes() {
       <main id="main-content">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/play" element={<Navigate to="/#download" replace />} />
+          <Route path="/play" element={webUrl ? <PlayPage /> : <Navigate to="/#download" replace />} />
           <Route path="/download" element={<Navigate to="/#download" replace />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="*" element={<HomePage />} />

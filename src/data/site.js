@@ -1,6 +1,8 @@
 import releaseManifest from './release.json'
 
 const windowsDownloadUrl = import.meta.env.VITE_WINDOWS_DOWNLOAD_URL || releaseManifest.windows.downloadUrl
+const androidDownloadUrl = import.meta.env.VITE_ANDROID_DOWNLOAD_URL || releaseManifest.android.downloadUrl
+const webUrl = import.meta.env.VITE_RENPY_WEB_URL || releaseManifest.web.url
 
 export const release = {
   ...releaseManifest,
@@ -11,6 +13,17 @@ export const release = {
     fileSize: import.meta.env.VITE_WINDOWS_FILE_SIZE || releaseManifest.windows.fileSize,
     sha256: import.meta.env.VITE_WINDOWS_SHA256 || (import.meta.env.VITE_WINDOWS_DOWNLOAD_URL ? '' : releaseManifest.windows.sha256),
   },
+  android: {
+    ...releaseManifest.android,
+    downloadUrl: androidDownloadUrl,
+    fileSize: import.meta.env.VITE_ANDROID_FILE_SIZE || releaseManifest.android.fileSize,
+    sha256: import.meta.env.VITE_ANDROID_SHA256 || (import.meta.env.VITE_ANDROID_DOWNLOAD_URL ? '' : releaseManifest.android.sha256),
+  },
+  web: {
+    ...releaseManifest.web,
+    url: webUrl,
+  },
+  webUrl,
 }
 
 export const gallery = [

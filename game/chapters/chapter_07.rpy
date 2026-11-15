@@ -65,6 +65,15 @@ label chapter_07:
     "The red receiver is warm."
     "The room waits."
 
+    if deduction_unlocked:
+        "The evidence arranges itself behind your eyes: the photographs, the dates, the seventh name."
+        "You are not guessing anymore."
+        $ change_sanity(5)
+    if has_item("red_thread"):
+        "You wrap the red thread around your wrist. It pulls toward the wardrobe."
+        $ change_attention(-1)
+        $ change_sanity(3)
+
     if sanity <= 0:
         "Your thoughts are not yours anymore. They are white noise with a shape."
         "You lift the receiver before you decide to."
@@ -72,7 +81,7 @@ label chapter_07:
 
     menu:
         "Say her name. Face what you did.":
-            if remembered and clue_count() >= 6 and sanity >= 25 and not answered_seventh:
+            if remembered and (clue_count() >= 6 or deduction_unlocked) and sanity >= 25 and not answered_seventh:
                 jump ending_truth
             else:
                 jump ending_failed_truth

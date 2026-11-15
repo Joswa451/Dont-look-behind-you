@@ -28,7 +28,15 @@ __pycache__/
 release/**/*.zip
 release/**/*.tar.bz2
 !release/windows/DontLookBehindYou-Windows-v1.0.0.zip
+!release/windows/DontLookBehindYou-Windows-v1.0.1.zip
+
+# Android signing keys and generated packages
+*.keystore
+release/android/*
+!release/android/DontLookBehindYou-Android-v1.0.0.apk
+!release/android/DontLookBehindYou-Android-v1.0.1.apk
 
 # Operating system files
 .DS_Store
 Thumbs.db
+backups/

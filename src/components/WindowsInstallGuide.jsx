@@ -4,12 +4,12 @@ const steps = [
   {
     number: '01', title: 'Download the ZIP',
     text: 'Save the Windows package from the official game website.',
-    art: <div className="windows-mock-window browser-mock"><div className="mock-titlebar"><span className="mock-dots" /> Downloads</div><div className="mock-download-row"><span className="mock-file-icon"><Archive size={18} /></span><span><b>DontLookBehindYou-Windows-v1.0.0.zip</b><small>Download complete</small></span><Check size={15} className="mock-check" /></div></div>,
+    art: <div className="windows-mock-window browser-mock"><div className="mock-titlebar"><span className="mock-dots" /> Downloads</div><div className="mock-download-row"><span className="mock-file-icon"><Archive size={18} /></span><span><b>DontLookBehindYou-Windows-v1.0.1.zip</b><small>Download complete</small></span><Check size={15} className="mock-check" /></div></div>,
   },
   {
     number: '02', title: 'Choose Extract All',
     text: 'Right-click the ZIP and select “Extract All…” from its menu.',
-    art: <div className="windows-mock-window context-mock"><div className="mock-zip-row"><Archive size={17} /> DontLookBehindYou-Windows-v1.0.0.zip</div><div className="mock-context-menu"><span>Open</span><span className="mock-selected"><Archive size={13} /> Extract All… <ChevronRight size={12} /></span><span>Copy</span></div><MousePointer2 className="mock-cursor" size={23} /></div>,
+    art: <div className="windows-mock-window context-mock"><div className="mock-zip-row"><Archive size={17} /> DontLookBehindYou-Windows-v1.0.1.zip</div><div className="mock-context-menu"><span>Open</span><span className="mock-selected"><Archive size={13} /> Extract All… <ChevronRight size={12} /></span><span>Copy</span></div><MousePointer2 className="mock-cursor" size={23} /></div>,
   },
   {
     number: '03', title: 'Open the game folder',

@@ -5,6 +5,12 @@ init python:
         hotspot("ch1_bathroom", 1290, 250, 260, 390, "The bathroom door"),
         hotspot("ch1_kitchen", 520, 600, 310, 210, "The old answering machine"),
     ]
+    ch1_bedroom_hotspots = [
+        hotspot("ch1_wall", 180, 320, 300, 300, "The wall behind the bed"),
+        hotspot("ch1_window", 1240, 250, 300, 330, "The bedroom window"),
+        hotspot("ch1_wardrobe", 760, 260, 280, 430, "The bedroom wardrobe"),
+        hotspot("ch1_nightstand", 430, 650, 300, 220, "The nightstand"),
+    ]
 
 label chapter_01:
     $ current_chapter = 1
@@ -100,6 +106,7 @@ label chapter_01:
         "Before the light disappears, you find a photograph under the window."
         "You do not remember putting it there."
         $ add_clue("old_photo")
+        $ add_item("photograph")
         $ change_sanity(-4)
         "You turn it over before you can stop yourself."
 
@@ -212,13 +219,85 @@ label chapter_01:
 
 label ch1_explore:
     $ ch1_leave = False
+    $ ch1_room = "livingroom"
+    scene bg livingroom
+    with dissolve
     while not ch1_leave:
-        call screen investigate(hotspots=ch1_hotspots, prompt="The apartment is full of things you almost remember.")
+        if ch1_room == "bedroom":
+            call screen investigate(hotspots=ch1_bedroom_hotspots, prompt="The bedroom remembers more than you do.", exits=[("livingroom", "LIVING ROOM")])
+        else:
+            call screen investigate(hotspots=ch1_hotspots, prompt="The apartment is full of things you almost remember.", exits=[("bedroom", "BEDROOM")])
         if _return == "leave":
             $ ch1_leave = True
+        elif isinstance(_return, tuple) and _return[0] == "nav":
+            $ ch1_room = _return[1]
+            if ch1_room == "bedroom":
+                scene bg bedroom day
+                with fade
+                $ ch1_bedroom_visits += 1
+            else:
+                scene bg livingroom
+                with fade
         else:
-            $ ch1_spot = ch1_hotspots[_return]
+            if ch1_room == "bedroom":
+                $ ch1_spot = ch1_bedroom_hotspots[_return]
+            else:
+                $ ch1_spot = ch1_hotspots[_return]
             call expression ch1_spot["label"]
+    return
+
+label ch1_wall:
+    scene bg bedroom day
+    with dissolve
+    if has_clue("wall_knock"):
+        "The wall is quiet now. That does not mean it has stopped listening."
+        return
+    play sound audio.footsteps
+    "Three knocks answer from inside the wall. You have not knocked."
+    "You press your palm to the plaster. It is warm."
+    $ add_clue("wall_knock")
+    $ change_sanity(-4)
+    $ change_attention(1)
+    return
+
+label ch1_window:
+    scene bg bedroom day
+    with dissolve
+    if has_clue("window_reflection"):
+        "Your reflection is back where it belongs. It watches you from the glass."
+        return
+    "The window looks onto the brick wall of the next building."
+    "Your reflection is standing in that wall."
+    "You step back. It stays where it is."
+    $ add_clue("window_reflection")
+    $ change_sanity(-3)
+    $ change_attention(1)
+    return
+
+label ch1_wardrobe:
+    scene bg bedroom day
+    with dissolve
+    if has_clue("wardrobe_lock"):
+        "The second lock is still hidden behind the coat rail. The brass keyhole is warm."
+        return
+    "The wardrobe is almost empty. A coat that is not yours. A child's shoebox."
+    "Behind the coat rail, a second lock is set into the wood."
+    "It is newer than the wardrobe. The keyhole is brass."
+    $ add_clue("wardrobe_lock")
+    $ change_sanity(-3)
+    return
+
+label ch1_nightstand:
+    scene bg bedroom day
+    with dissolve
+    if has_clue("agency_receipt"):
+        "The receipt is still in the drawer. The date has not changed."
+        return
+    "The nightstand drawer sticks. Inside, under a dead battery and a takeout menu, is a rent receipt."
+    "E. Mercer. Apartment 3B. Seven years ago."
+    "The agency stamp is the same one on your current lease."
+    $ add_clue("agency_receipt")
+    $ change_sanity(-3)
     return
 
 label ch1_photo:
@@ -235,6 +314,7 @@ label ch1_photo:
     "A girl stands beside you. Her face has been scratched away with something sharp."
     "On the back, in your mother's handwriting: Ethan, Iris, 3B. Don't forget."
     $ add_clue("old_photo")
+    $ add_item("photograph")
     $ change_sanity(-5)
     "You do not remember a girl."
     "You remember the shape of her hand in yours."

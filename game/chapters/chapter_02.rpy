@@ -5,6 +5,11 @@ init python:
         hotspot("ch2_casefile", 1220, 470, 300, 240, "A grey archive box"),
         hotspot("ch2_computer", 560, 720, 320, 220, "A library terminal"),
     ]
+    ch2_school_hotspots = [
+        hotspot("ch2_trophy", 220, 350, 300, 300, "The trophy case"),
+        hotspot("ch2_poster", 720, 330, 300, 300, "A noticeboard"),
+        hotspot("ch2_locker", 1260, 350, 300, 360, "A dented locker"),
+    ]
 
 label chapter_02:
     $ current_chapter = 2
@@ -34,6 +39,9 @@ label chapter_02:
     "The library occupies the basement of the humanities building. The lights buzz. The air smells of paper and old coffee."
     "You tell the librarian you are looking for local history. She points you toward the archives without looking up."
 
+    scene bg school
+    with dissolve
+    call ch2_school_explore
     scene bg classroom
     with dissolve
     "You sit at a reading table with a stack of folders and no idea where to begin."
@@ -257,6 +265,63 @@ label ch2_explore:
         else:
             $ ch2_spot = ch2_hotspots[_return]
             call expression ch2_spot["label"]
+    return
+
+label ch2_school_explore:
+    $ ch2_school_leave = False
+    while not ch2_school_leave:
+        call screen investigate(hotspots=ch2_school_hotspots, prompt="The school keeps its oldest memories in the basement, but some have climbed upstairs.")
+        if _return == "leave":
+            $ ch2_school_leave = True
+        else:
+            $ ch2_spot = ch2_school_hotspots[_return]
+            call expression ch2_spot["label"]
+    return
+
+label ch2_trophy:
+    scene bg school
+    with dissolve
+    if has_clue("st_agnes_photo"):
+        "The children in the photograph are still arranged in two neat rows. Iris is still at the edge."
+        return
+    "The trophy case is cloudy with fingerprints. Behind the brass cups, a photograph has been taped to the glass."
+    "Two rows of children in front of St. Agnes. Iris Vale stands at the edge, holding a music box."
+    "Beside her, a boy's face has been scratched out."
+    "You recognize your own shirt."
+    $ add_clue("st_agnes_photo")
+    $ change_sanity(-4)
+    $ change_iris_bond(1)
+    return
+
+label ch2_poster:
+    scene bg school
+    with dissolve
+    if has_clue("iris_missing_poster"):
+        "The poster is still hidden behind the newer notices. The red words have not faded."
+        return
+    play sound audio.paper
+    "A missing-child poster is buried under six layers of club announcements."
+    "IRIS VALE. AGE 12. LAST SEEN AT ST. AGNES HOME."
+    "The date is the day after the fire."
+    "Someone has written across the bottom in red ink: SHE WAS NEVER MISSING."
+    $ add_clue("iris_missing_poster")
+    $ change_sanity(-5)
+    $ change_iris_bond(1)
+    return
+
+label ch2_locker:
+    scene bg school
+    with dissolve
+    if has_clue("locker_names"):
+        "The locker is still open. The names are still fresh."
+        return
+    play sound audio.knife
+    "The locker door is dented and hanging open. The inside is empty except for the scratches."
+    "Seven names. Six have dates beside them."
+    "The seventh is yours. The scratches are fresh."
+    $ add_clue("locker_names")
+    $ change_sanity(-5)
+    $ change_attention(1)
     return
 
 label ch2_newspaper:

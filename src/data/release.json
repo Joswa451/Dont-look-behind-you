@@ -1,11 +1,26 @@
 {
   "title": "DON'T LOOK BEHIND YOU",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "windows": {
-    "downloadUrl": "/downloads/DontLookBehindYou-Windows-v1.0.0.zip",
-    "archivePath": "release/windows/DontLookBehindYou-Windows-v1.0.0.zip",
-    "fileSize": "84.4 MiB",
-    "sha256": "0d1733a95624818affa2e942f5edad55673635d50527acd1afa04ce12e88c048"
+    "downloadUrl": "/downloads/DontLookBehindYou-Windows-v1.0.1.zip",
+    "archivePath": "release/windows/DontLookBehindYou-Windows-v1.0.1.zip",
+    "fileSize": "104.4 MiB",
+    "sha256": "9937575f53bcf52d6feabf06e9a974c57b3b592a5ec920330f25771ceb8f686d"
+  },
+  "android": {
+    "downloadUrl": "/downloads/DontLookBehindYou-Android-v1.0.1.apk",
+    "archivePath": "release/android/DontLookBehindYou-Android-v1.0.1.apk",
+    "fileSize": "126.5 MiB",
+    "sha256": "643514add821cb13e228c61bbb8cb2f138de6098abba9c83024098ee71183057",
+    "package": "com.dontlookbehindyou.game",
+    "architecture": "Universal APK (arm64-v8a, armeabi-v7a, x86_64)",
+    "format": "APK",
+    "minimumOS": "Android 5.0+ (API 21)",
+    "targetOS": "Android 15 (API 35)",
+    "orientation": "Landscape"
+  },
+  "web": {
+    "url": ""
   },
   "architecture": "x86_64 (64-bit)",
   "format": "ZIP archive",

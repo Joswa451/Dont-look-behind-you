@@ -1,0 +1,45 @@
+﻿I'm sorry, but an uncaught exception occurred.
+
+While running game code:
+  File "renpy/common/00start.rpy", line 195, in script
+    python:
+  File "renpy/common/00start.rpy", line 195, in script
+    python:
+  File "renpy/common/00start.rpy", line 196, in <module>
+    renpy.execute_default_statement(True)
+  File "game/voice_system.rpy", line 1, in execute_default
+    default last_voice_file = None
+Exception: store.last_voice_file is being given a default a second time.
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/bootstrap.py", line 359, in bootstrap
+    renpy.main.main()
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/main.py", line 652, in main
+    run(restart)
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/main.py", line 148, in run
+    renpy.execution.run_context(True)
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/execution.py", line 958, in run_context
+    context.run()
+  File "renpy/common/00start.rpy", line 195, in script
+    python:
+  File "lib/python3.9/future/utils/__init__.py", line 444, in raise_
+  File "renpy/common/00start.rpy", line 195, in script
+    python:
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/ast.py", line 834, in execute
+    renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/python.py", line 1187, in py_exec_bytecode
+    exec(bytecode, globals, locals)
+  File "renpy/common/00start.rpy", line 196, in <module>
+    renpy.execute_default_statement(True)
+  File "/tmp/opencode/android-build/renpy-8.3.7-sdk/renpy/exports/statementexports.py", line 372, in execute_default_statement
+    i.execute_default(start)
+  File "game/voice_system.rpy", line 1, in execute_default
+    default last_voice_file = None
+Exception: store.last_voice_file is being given a default a second time.
+
+Linux-7.0.0-43-generic-x86_64-with-glibc2.43 x86_64
+Ren'Py 8.3.7.25031702
+DON'T LOOK BEHIND YOU 1.0.1
+Sun Nov 15 13:29:36 2026

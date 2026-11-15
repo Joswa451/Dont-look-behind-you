@@ -1,3 +1,11 @@
+init -100 python:
+    if not renpy.music.channel_defined("charvoice"):
+        renpy.music.register_channel("charvoice", mixer="voice", loop=False)
+    if not renpy.music.channel_defined("narrvoice"):
+        renpy.music.register_channel("narrvoice", mixer="voice", loop=False)
+    if not renpy.music.channel_defined("voicemail"):
+        renpy.music.register_channel("voicemail", mixer="voice", loop=False)
+
 init python:
     renpy.music.register_channel("ambient", mixer="sfx", loop=True)
     renpy.music.register_channel("pulse", mixer="sfx", loop=True)
@@ -44,8 +52,15 @@ define audio.unlock = "audio/sfx/door_unlock.ogg"
 define audio.drawer = "audio/sfx/drawer.ogg"
 define audio.scream = "audio/sfx/scream.ogg"
 
+define audio.voicemail_unknown = "audio/voice/voicemail_unknown.ogg"
+define audio.voicemail_mom = "audio/voice/voicemail_mom.ogg"
+define audio.voicemail_maya = "audio/voice/voicemail_maya.ogg"
+
 init python:
     def silence_scene(fade=1.5):
         renpy.music.stop(channel="music", fadeout=fade)
         renpy.music.stop(channel="ambient", fadeout=fade)
         renpy.music.stop(channel="pulse", fadeout=fade)
+        renpy.sound.stop(channel="charvoice", fadeout=fade)
+        renpy.sound.stop(channel="narrvoice", fadeout=fade)
+        renpy.sound.stop(channel="voicemail", fadeout=fade)

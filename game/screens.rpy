@@ -150,6 +150,7 @@ style ending_quote is default:
 
 
 screen say(who, what):
+    $ mobile = renpy.variant("small")
     add SideImage() xpos 72 ypos 150 xsize 500 ysize 834
     window:
         id "window"
@@ -163,7 +164,7 @@ screen say(who, what):
         imagebutton:
             idle "images/ui/arrow.png"
             xpos 1810
-            ypos 322
+            ypos (440 if mobile else 322)
             at ctc_blink
             action Return()
 
@@ -191,6 +192,8 @@ screen quick_menu():
             ypos 1018
             spacing 6
             textbutton "PHONE [phone_unread]" action Show("phone_app", tab="messages") style "quick_button" text_style "quick_button_text"
+            textbutton "BAG" action Show("inventory_screen") style "quick_button" text_style "quick_button_text"
+            textbutton "JOURNAL" action Show("evidence_journal") style "quick_button" text_style "quick_button_text"
             textbutton "LOG" action ShowMenu("history") style "quick_button" text_style "quick_button_text"
             textbutton "SAVE" action ShowMenu("save") style "quick_button" text_style "quick_button_text"
             textbutton "LOAD" action ShowMenu("load") style "quick_button" text_style "quick_button_text"
@@ -243,7 +246,7 @@ screen chapter_card(number, title):
     timer 3.6 action Return()
 
 
-screen investigate(hotspots, prompt="Something here is waiting to be noticed."):
+screen investigate(hotspots, prompt="Something here is waiting to be noticed.", exits=[]):
     modal True
     zorder 45
     default hover_name = ""
@@ -271,6 +274,16 @@ screen investigate(hotspots, prompt="Something here is waiting to be noticed."):
         background Solid("#080a0ed9")
         padding (24, 12)
         text (hover_name if hover_name else prompt) style "default" size 28 xalign 0.5 text_align 0.5
+    if exits:
+        vbox:
+            xpos 24
+            ypos 150
+            spacing 10
+            for exit_key, exit_label in exits:
+                textbutton exit_label:
+                    style "phone_close_button"
+                    text_style "phone_close_button_text"
+                    action Return(("nav", exit_key))
     textbutton "STEP AWAY":
         xalign 0.985
         yalign 0.88
@@ -285,6 +298,7 @@ screen phone_app(tab="messages"):
     zorder 90
     default phone_tab = tab
     on "show" action Function(mark_phone_read)
+    on "hide" action Function(stop_voicemail)
     add Solid("#000000aa")
     frame:
         xalign 0.5
@@ -304,6 +318,7 @@ screen phone_app(tab="messages"):
                 spacing 5
                 textbutton "MESSAGES" action SetScreenVariable("phone_tab", "messages") style "phone_tab_button" text_style "phone_tab_button_text"
                 textbutton "CALLS" action SetScreenVariable("phone_tab", "calls") style "phone_tab_button" text_style "phone_tab_button_text"
+                textbutton "VOICE" action SetScreenVariable("phone_tab", "voicemail") style "phone_tab_button" text_style "phone_tab_button_text"
                 textbutton "PHOTOS" action SetScreenVariable("phone_tab", "photos") style "phone_tab_button" text_style "phone_tab_button_text"
             frame:
                 xfill True
@@ -314,9 +329,12 @@ screen phone_app(tab="messages"):
                     use phone_messages
                 elif phone_tab == "calls":
                     use phone_calls
+                elif phone_tab == "voicemail":
+                    use phone_voicemails
                 else:
                     use phone_photos
             textbutton "PUT IT AWAY" action Hide("phone_app") style "phone_close_button" text_style "phone_close_button_text" xalign 0.5
+    key "game_menu" action Hide("phone_app")
 
 
 screen phone_messages():
@@ -366,6 +384,36 @@ screen phone_calls():
                             text call["from"] style "pref_label" size 21
                             text call["time"] style "default" size 19 color "#7e7668"
                         text ("ANSWERED" if call["answered"] else "MISSED") style "pref_label" size 17 xalign 1.0 color ("#7f9f8f" if call["answered"] else "#9d5a5a")
+
+
+screen phone_voicemails():
+    viewport:
+        mousewheel True
+        draggable True
+        xfill True
+        yfill True
+        vbox:
+            spacing 10
+            xfill True
+            if not phone_voicemails:
+                text "No voicemail." style "pref_label" size 24
+            for idx, voicemail in enumerate(phone_voicemails[::-1]):
+                frame:
+                    xfill True
+                    background Solid("#161d27e8")
+                    padding (13, 9)
+                    vbox:
+                        spacing 3
+                        hbox:
+                            xfill True
+                            text voicemail["from"] style "pref_label" size 19 color ("#c7a7a7" if voicemail["from"] == "MAYA" else "#9fb6bd")
+                            text voicemail["time"] style "pref_label" size 16 color "#6e6658" xalign 1.0
+                        hbox:
+                            spacing 8
+                            textbutton "PLAY" action Play("voicemail", voicemail["audio"]) style "quick_button" text_style "quick_button_text"
+                            textbutton "STOP" action Stop("voicemail") style "quick_button" text_style "quick_button_text"
+                            text voicemail["duration"] style "default" size 18 color "#7e7668" yalign 0.5
+                        text voicemail["text"] style "default" size 23 xsize 410 line_spacing 3
 
 
 screen phone_photos():
@@ -430,6 +478,7 @@ screen incoming_call(caller="UNKNOWN", subtitle="3:00 AM"):
         textbutton "IGNORE" action Return("ignore") style "menu_button" text_style "menu_button_text"
     on "show" action Play("sound", "audio/sfx/phone_ring.ogg", loop=True)
     on "hide" action Stop("sound", fadeout=0.3)
+    key "game_menu" action Return("ignore")
 
 
 screen ending_stamp(number, title, quote):
@@ -450,6 +499,7 @@ screen ending_stamp(number, title, quote):
 
 screen main_menu():
     tag menu
+    $ mobile = renpy.variant("small")
     add "images/backgrounds/bg_menu.jpg"
     add "images/effects/vignette.png"
     add "images/effects/scanlines.png" alpha 0.18
@@ -459,7 +509,7 @@ screen main_menu():
         text "YOU LOOKED BACK." style "pref_label" size 24 xalign 0.5 ypos 512 color "#8e3f3f"
     vbox:
         xalign 0.5
-        ypos 560
+        ypos (520 if mobile else 560)
         spacing 8
         style_prefix "menu"
         textbutton "NEW GAME" action Start()
@@ -469,6 +519,8 @@ screen main_menu():
         textbutton "CREDITS" action ShowMenu("credits")
         textbutton "QUIT" action Quit(confirm=True)
     text "A short horror story in seven nights." style "pref_label" size 20 xalign 0.5 yalign 0.965 color "#6e6658"
+    if renpy.variant("android"):
+        key "K_AC_BACK" action Quit(confirm=True)
 
 
 screen save():
@@ -524,9 +576,9 @@ screen preferences():
     frame:
         xalign 0.5
         yalign 0.5
-        xysize (1080, 880)
+        xysize (1120, 1000)
         background Solid("#080b10ee")
-        padding (48, 36)
+        padding (44, 28)
         vbox:
             spacing 22
             hbox:
@@ -535,12 +587,18 @@ screen preferences():
                 textbutton "BACK" action Return() style "quick_button" text_style "quick_button_text" xalign 1.0 yalign 0.5
             text "MUSIC" style "pref_label"
             bar value Preference("music volume") style "pref_bar"
-            text "SOUND" style "pref_label"
+            text "SOUND EFFECTS" style "pref_label"
             bar value Preference("sound volume") style "pref_bar"
+            text "VOICE VOLUME" style "pref_label"
+            bar value Preference("voice volume") style "pref_bar"
             text "TEXT SPEED" style "pref_label"
             bar value Preference("text speed") style "pref_bar"
             text "AUTO-FORWARD" style "pref_label"
             bar value Preference("auto-forward time") style "pref_bar"
+            hbox:
+                spacing 14
+                textbutton "REPLAY VOICE" action Function(replay_last_voice) sensitive last_voice_file is not None style "quick_button" text_style "quick_button_text"
+                textbutton "MUTE / UNMUTE VOICES" action Preference("voice mute", "toggle") style "quick_button" text_style "quick_button_text"
             hbox:
                 spacing 14
                 textbutton "WINDOW" action Preference("display", "window") style "quick_button" text_style "quick_button_text"
@@ -641,6 +699,7 @@ screen cg_view(entry):
         padding (30, 12)
         text entry["title"] style "pref_label" size 24
     textbutton "CLOSE" action Hide("cg_view") style "quick_button" text_style "quick_button_text" xalign 0.98 yalign 0.04
+    key "game_menu" action Hide("cg_view")
 
 
 screen credits():
@@ -669,6 +728,7 @@ screen credits():
                     text "A short horror visual novel in seven nights." style "ending_quote" size 27 xalign 0.5
                     text "STORY, ART, AND MUSIC\nCreated procedurally for this game." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "ENGINE\nRen'Py 8.3.7" style "pref_label" size 22 xalign 0.5 text_align 0.5
+                    text "VOICE\nPerformed by a local Piper neural text-to-speech cast." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "TYPEFACES\nCinzel — Cormorant Garamond — EB Garamond\nLicensed under the SIL Open Font License." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "All characters and events in this work are fictional.\nAny resemblance to real persons or places is coincidental." style "ending_quote" size 23 xalign 0.5 text_align 0.5
                     text "Thank you for listening." style "pref_label" size 24 xalign 0.5
@@ -701,6 +761,7 @@ screen credits_end():
                     text "Thank you for staying until the end." style "ending_quote" size 28 xalign 0.5
                     text "STORY, ART, AND MUSIC\nCreated procedurally for this game." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "ENGINE\nRen'Py 8.3.7" style "pref_label" size 22 xalign 0.5 text_align 0.5
+                    text "VOICE\nPerformed by a local Piper neural text-to-speech cast." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "TYPEFACES\nCinzel — Cormorant Garamond — EB Garamond\nLicensed under the SIL Open Font License." style "pref_label" size 22 xalign 0.5 text_align 0.5
                     text "All characters and events in this work are fictional." style "ending_quote" size 23 xalign 0.5
                     text "The phone is still ringing." style "pref_label" size 22 xalign 0.5 color "#795d5d"

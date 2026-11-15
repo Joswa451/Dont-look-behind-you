@@ -54,17 +54,20 @@ label chapter_05:
     if not has_clue("bargain_tape"):
         "The tape recorder clicks. Your father's voice fills the room."
         $ add_clue("bargain_tape")
+        $ add_item("bargain_tape", silent=True)
         $ change_sanity(-6)
         "You cannot make yourself stop listening."
 
     if not has_clue("iris_diary"):
         "The red diary falls open at your feet."
         $ add_clue("iris_diary")
+        $ add_item("iris_diary", silent=True)
         $ change_sanity(-5)
         "The last page is written in careful, looping letters."
 
     "When the tape ends, the room is so quiet you can hear the house settling around you."
     "Then the music box opens by itself."
+    $ add_item("music_box", silent=True)
     play sound audio.music_box
     "Three notes. Three more. The same melody from the basement."
     "Iris is standing inside the circle. You did not see her arrive."
@@ -120,6 +123,8 @@ label chapter_05:
         "Play the music box.":
             $ remembered = True
             $ change_sanity(-8)
+            $ change_iris_bond(2)
+            $ change_attention(1)
             play sound audio.music_box
             scene cg hidden room
             with slowfade
@@ -146,6 +151,8 @@ label chapter_05:
         "Destroy the music box.":
             $ destroyed_box = True
             $ change_sanity(-5)
+            $ change_iris_bond(-1)
+            $ change_attention(2)
             play sound audio.knife
             "You bring the music box down against the floor."
             play sound audio.glitch
@@ -164,12 +171,18 @@ label chapter_05:
         "Take the music box and leave.":
             $ kept_box = True
             $ change_sanity(-2)
+            $ change_iris_bond(1)
             "You pick up the music box. It is warm, as if someone has been holding it."
             i "You're going to have to choose eventually."
             e "I know."
             i "No. You don't."
             i "He'll make you think you have more time."
             "She steps aside. The circle on the floor remains unbroken."
+
+    if destroyed_box:
+        $ remove_item("music_box", silent=True)
+    else:
+        $ add_item("music_box", silent=True)
 
     if remembered:
         "The memory sits in you like a swallowed stone."
@@ -250,6 +263,7 @@ label ch5_tape:
     scene bg hiddenroom
     with dissolve
     $ add_clue("bargain_tape")
+    $ add_item("bargain_tape", silent=True)
     $ change_sanity(-8)
     "Seven years ago, you were thirteen."
     "You are twenty now."
@@ -270,7 +284,9 @@ label ch5_diary:
     "{i}I heard a boy through the wall. He said his name is Ethan. He said he would open the door.{/i}"
     "{i}I am still waiting. I am not angry. I am just very tired of the dark.{/i}"
     $ add_clue("iris_diary")
+    $ add_item("iris_diary", silent=True)
     $ change_sanity(-6)
+    $ change_iris_bond(1)
     "You close the diary. The room feels smaller than it did before."
     return
 

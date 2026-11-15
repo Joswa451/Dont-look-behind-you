@@ -1225,7 +1225,80 @@ def void():
 
 
 # ---------------------------------------------------------------------------
-# 13. MAIN MENU
+# 14. DREAM FOREST
+# ---------------------------------------------------------------------------
+def forest():
+    base = vertical_gradient((W, H), "#0c141c", "#020304").convert("RGBA")
+    img = Image.alpha_composite(base, radial_glow((W, H), (1450, 190), 430, (155, 174, 190), 95, 2.2))
+    d = d_of(img)
+    d.ellipse([1388, 128, 1512, 252], fill=(198, 205, 204, 150))
+    d.ellipse([1402, 142, 1498, 238], fill=(215, 216, 208, 95))
+
+    moon_shaft = light_shaft((W, H), [(1380, 230), (1620, 250), (1280, 1080), (760, 1080)], (106, 132, 158), 24)
+    img = Image.alpha_composite(img, moon_shaft)
+
+    ground = polygon_gradient((W, H), [(0, 690), (W, 620), (W, H), (0, H)], "#171d20", "#030405")
+    img = Image.alpha_composite(img, ground)
+
+    path = polygon_gradient((W, H), [(840, 650), (1080, 650), (1480, H), (470, H)], "#262627", "#090a0c")
+    img = Image.alpha_composite(img, path)
+    d = d_of(img)
+    rng = random.Random(77)
+    for i in range(70):
+        x = rng.uniform(0, W)
+        y = rng.uniform(680, H)
+        d.line([(x, y), (x + rng.uniform(-24, 24), y + rng.uniform(3, 16))], fill=(105, 100, 92, rng.randint(8, 28)), width=1)
+
+    def branch(draw, x, y, length, angle, width, depth, tone):
+        if depth <= 0 or length < 9:
+            return
+        x2 = x + math.cos(angle) * length
+        y2 = y + math.sin(angle) * length
+        draw.line([(x, y), (x2, y2)], fill=tone + (235,), width=max(1, int(width)))
+        for side in (-1, 1):
+            if rng.random() < 0.86:
+                branch(draw, x2, y2, length * rng.uniform(0.54, 0.76),
+                       angle + side * rng.uniform(0.34, 0.76), width * 0.63, depth - 1, tone)
+
+    far = layer()
+    df = d_of(far)
+    for i in range(26):
+        x = rng.uniform(-100, W + 100)
+        y = rng.uniform(620, 730)
+        branch(df, x, y, rng.uniform(80, 170), -math.pi / 2 + rng.uniform(-0.2, 0.2), 5, 5, (22, 29, 34))
+    img = Image.alpha_composite(img, far)
+
+    near = layer()
+    dn = d_of(near)
+    for i in range(13):
+        x = rng.choice([rng.uniform(-80, 380), rng.uniform(1540, 2000)])
+        y = rng.uniform(520, 760)
+        branch(dn, x, y, rng.uniform(150, 330), -math.pi / 2 + rng.uniform(-0.18, 0.18), 15, 7, (7, 9, 11))
+    for i in range(9):
+        x = rng.uniform(250, 1670)
+        y = rng.uniform(610, 780)
+        branch(dn, x, y, rng.uniform(120, 260), -math.pi / 2 + rng.uniform(-0.2, 0.2), 8, 6, (10, 13, 16))
+    img = Image.alpha_composite(img, near)
+
+    d = d_of(img)
+    d.line([(735, 486), (860, 520), (905, 494)], fill=(112, 24, 28, 210), width=3)
+    d.line([(905, 494), (1010, 530)], fill=(112, 24, 28, 150), width=2)
+
+    for i in range(9):
+        x = 1100 + i * 44 + rng.uniform(-12, 12)
+        y = 790 + i * 24 + rng.uniform(-8, 8)
+        d.ellipse([x - 4, y - 8, x + 4, y + 8], fill=(1, 2, 3, 110))
+        d.ellipse([x + 20, y + 6, x + 28, y + 22], fill=(1, 2, 3, 105))
+
+    img = Image.alpha_composite(img, fog_layer((W, H), (86, 101, 112), 34, seed=22))
+    img = Image.alpha_composite(img, fog_layer((W, H), (64, 75, 86), 26, seed=9))
+    img = dust_motes(img, 80, color=(170, 185, 195), seed=12, alpha=30)
+    img = img.convert("RGB")
+    save(finish_bg(img, 0.82, 0.07, 0.5, seed=77), out("backgrounds", "bg_forest.jpg"))
+
+
+# ---------------------------------------------------------------------------
+# 15. MAIN MENU
 # ---------------------------------------------------------------------------
 def menu_bg():
     base = canvas("#181420", "#030305")
@@ -1319,7 +1392,7 @@ if __name__ == "__main__":
         "hallway": hallway, "bathroom": bathroom, "kitchen": kitchen, "school": school,
         "classroom": classroom, "street": street, "underground": underground,
         "basement": basement, "hiddenroom": hiddenroom, "void": void,
-        "menu": menu_bg, "phone_photo": phone_photo,
+        "menu": menu_bg, "phone_photo": phone_photo, "forest": forest,
     }
     if "all" in which:
         for fn in funcs.values():

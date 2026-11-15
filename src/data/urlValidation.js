@@ -14,7 +14,7 @@ export function safeDownloadUrl(value, base) {
 
 export function safeWebPlayerUrl(value, base) {
   const url = webUrl(value, base)
-  if (!url || /\.(exe|zip|7z|rar|tar|gz|dmg|appimage)$/i.test(url.pathname)) return ''
+  if (!url || /\.(exe|apk|zip|7z|rar|tar|gz|dmg|appimage)$/i.test(url.pathname)) return ''
   return url.href
 }
 

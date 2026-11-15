@@ -4,6 +4,7 @@ init python:
         hotspot("ch3_drawings", 760, 380, 300, 250, "Drawings taped to the pipes"),
         hotspot("ch3_names", 1290, 300, 300, 260, "Names carved into the wall"),
         hotspot("ch3_boiler", 1400, 620, 300, 250, "The old boiler"),
+        hotspot("ch3_piano", 620, 620, 340, 230, "The piano with no keys"),
     ]
 
 label chapter_03:
@@ -35,6 +36,7 @@ label chapter_03:
 
     play sound audio.footsteps
     "Maya is waiting in the hallway with a shoebox and a flashlight."
+    $ add_item("flashlight", silent=True)
     show maya neutral at char_right_in
     with dissolve
     m "I went down to the laundry room. The door at the end of the hall was open."
@@ -215,7 +217,9 @@ label chapter_03:
         $ add_call("MOM", answered=False)
         $ change_sanity(-3)
         $ push_message("MOM", "I'm sorry. We should have told you. The music box is the lock. Don't let him—", stamp="3:04 AM", alert=False)
+        $ add_voicemail("MOM", "I'm sorry. We should have told you. The music box is the lock. Don't let him finish the call.", audio.voicemail_mom, stamp="3:04 AM", duration="0:16")
         "The message ends there."
+        "A voicemail notification remains on the screen."
         "You play it again. The last word is different each time."
 
     show girl sad at char_center
@@ -305,6 +309,11 @@ label ch3_names:
         return
     play sound audio.knife
     "Someone has carved names into the concrete beside the boiler."
+    if not flashlight_on:
+        "The corner is too dark to read them clearly. You can barely make out the shape of the letters."
+        $ change_attention(1)
+    else:
+        "The flashlight beam picks the names out of the concrete."
     "Seven names. The first six have dates beside them."
     "The seventh is yours."
     "ETHAN MERCER. No date."
@@ -312,6 +321,24 @@ label ch3_names:
     $ add_clue("name_list")
     $ change_sanity(-8)
     "You touch the carving. The concrete is warm."
+    return
+
+label ch3_piano:
+    scene bg basement
+    with dissolve
+    if has_clue("piano_keys"):
+        "The piano is still silent. The fingerprints are still there."
+        return
+    "The piano has no keys. The wooden strip where they should be is smooth and dustless."
+    if flashlight_on:
+        "Your flashlight finds child-sized fingerprints pressed into the wood above the missing keyboard."
+        "Someone practiced here for a long time. The prints face the wall."
+    else:
+        "You can only see the shape of the piano. The flashlight would show you more."
+        "When you touch the wood, your fingers find small dents arranged like a keyboard."
+    $ add_clue("piano_keys")
+    $ change_sanity(-4)
+    $ change_iris_bond(1)
     return
 
 label ch3_boiler:

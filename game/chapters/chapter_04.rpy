@@ -24,6 +24,7 @@ label chapter_04:
     "You do not understand why that is worse."
 
     "Maya knocks at noon. She is carrying a paper bag, a hammer, and a look you have not seen on her before."
+    $ add_item("hammer", silent=True)
     show maya scared at char_right_in
     with dissolve
     m "I brought food. And a weapon. The food is for me. The weapon is for the door."
@@ -114,6 +115,7 @@ label chapter_04:
     "{i}3B — SERVICE.{/i}"
     $ key_hidden_room = True
     $ add_clue("key")
+    $ add_item("brass_key", silent=True)
     $ change_sanity(-3)
 
     show maya scared at char_right_in
@@ -204,6 +206,30 @@ label chapter_04:
             $ push_message("UNKNOWN", "I can be patient too.", stamp="3:06 AM", alert=False)
             "You do not sleep."
             "Neither does the wardrobe."
+
+    "Your phone lights up before either of you can speak."
+    $ push_message("UNKNOWN", "Ask her what she heard on the tape.", stamp="3:04 AM", alert=False)
+    call screen phone_reply("An unknown number is waiting for an answer.", [("Who is this?", "demand"), ("Leave her out of this.", "protect"), ("I'm not afraid of you.", "defy")])
+    $ phone_choice = _return
+    if phone_choice == "demand":
+        $ change_attention(1)
+        $ change_sanity(-2)
+        $ push_message("UNKNOWN", "Wrong question. You already know.", stamp="3:05 AM", alert=False)
+        "The screen goes dark before you can type anything else."
+    elif phone_choice == "protect":
+        $ change_attention(-1)
+        $ change_sanity(2)
+        if maya_stayed:
+            $ gain_trust(1)
+        $ push_message("UNKNOWN", "How sweet. She cannot hear you from where she is going.", stamp="3:05 AM", alert=False)
+        "The message is a promise. You do not know which of you it is for."
+    else:
+        $ change_attention(2)
+        $ change_sanity(-3)
+        $ push_message("UNKNOWN", "Good. Then look behind you.", stamp="3:05 AM", alert=False)
+        play sound audio.whisper
+        "Something breathes against the back of your neck."
+        $ renpy.pause(0.8)
 
     if maya_stayed and trust_maya >= 4:
         show maya sad at char_right

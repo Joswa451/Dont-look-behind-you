@@ -26,7 +26,7 @@ export default function SiteHeader() {
         </button>
         <nav className={`main-nav ${open ? 'is-open' : ''}`} aria-label="Main navigation">
           {links.map(([label, href]) => <a href={href} key={label} onClick={close}>{label}</a>)}
-          <a href="/#download" className="nav-play" onClick={close}>Download for Windows <span aria-hidden="true">↗</span></a>
+          <a href="/#download" className="nav-play" onClick={close}>Download the game <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
     </header>

@@ -1,3 +1,11 @@
+init python:
+    ch6_forest_hotspots = [
+        hotspot("ch6_forest_carving", 220, 300, 340, 330, "An eye carved into a tree"),
+        hotspot("ch6_forest_thread", 760, 250, 310, 310, "Red thread around a black branch"),
+        hotspot("ch6_forest_footprints", 1150, 520, 330, 260, "Bare footprints in the mud"),
+        hotspot("ch6_forest_hollow", 480, 640, 340, 230, "A hollow under the roots"),
+    ]
+
 label chapter_06:
     $ current_chapter = 6
     call screen chapter_card("VI", "Seven Days Later")
@@ -16,11 +24,17 @@ label chapter_06:
     $ add_message("MAYA", "Ethan. Call me.", "7:42 AM")
     $ add_message("MAYA", "I'm at my place. The door is open.", "7:43 AM")
     $ add_message("MAYA", "Please don't come alone.", "7:43 AM")
+    $ add_voicemail("MAYA", "Ethan. If you get this, don't come alone. And don't trust the hallway. I'm sorry. I should have told you what I found.", audio.voicemail_maya, stamp="7:44 AM", duration="0:19")
 
     "The last message was sent from Maya's phone."
     "The text is typed in your handwriting."
 
     $ change_sanity(-8)
+
+    "Before you can stand, the bedroom folds inward."
+    call ch6_forest_dream
+    scene bg bedroom day
+    with slowfade
 
     "You get up. The apartment is wrong."
     "The furniture is arranged the way it was when you moved in. The boxes are packed again."
@@ -161,6 +175,7 @@ label chapter_06:
 
     play sound audio.heartbeat
     "Your heart answers seven."
+    call ch6_survival
 
     scene bg hiddenroom
     with slowfade
@@ -191,6 +206,8 @@ label chapter_06:
             $ saved_maya = True
             $ gain_trust(2)
             $ change_sanity(-9)
+            $ change_iris_bond(2)
+            $ change_attention(1)
             play sound audio.door_slam
             with vpunch
             "You step into the circle and take Maya's wrists."
@@ -211,6 +228,8 @@ label chapter_06:
             $ answered_seventh = True
             $ saved_maya = False
             $ change_sanity(-15)
+            $ change_iris_bond(-1)
+            $ change_attention(3)
             play sound audio.heartbeat
             "You pick up the red phone."
             listener "There you are."
@@ -230,6 +249,8 @@ label chapter_06:
             $ saved_maya = True
             $ gain_trust(1)
             $ change_sanity(-12)
+            $ change_iris_bond(1)
+            $ change_attention(2)
             play sound audio.knife
             with vpunch
             "You drag your heel through the red paint."
@@ -290,9 +311,137 @@ label chapter_06:
         $ push_message("UNKNOWN", "One night left.", stamp="11:58 PM", alert=False)
         $ push_message("UNKNOWN", "Come alone. Or don't. I like surprises.", stamp="11:59 PM", alert=False)
 
+    if not any(v["from"] == "UNKNOWN" for v in phone_voicemails):
+        $ add_voicemail("UNKNOWN", "One night left. Bring the box. Bring the girl. Bring whoever you want to lose. I will be waiting where the wall is thinnest.", audio.voicemail_unknown, stamp="11:59 PM", duration="0:12")
+
     scene black
     with slowfade
     $ ch6_finished = True
+    return
+
+label ch6_forest_dream:
+    scene bg forest
+    with slowfade
+    play ambient audio.wind fadein 2.0
+    "You are standing behind St. Agnes. The trees are bare and very straight."
+    "The burned children's home is a black shape through the branches. Its windows are lit."
+    "A red thread runs between the trees, low enough to follow."
+    "Somewhere ahead, a child is counting."
+
+    call ch6_forest_explore
+
+    if not has_clue("forest_thread"):
+        "Before you wake, the red thread wraps once around your wrist and pulls tight."
+        $ add_clue("forest_thread")
+    $ add_item("red_thread", silent=True)
+    $ change_sanity(-5)
+    $ change_attention(1)
+    "The thread tugs toward the apartment."
+    "You follow it until the forest folds into the shape of your bedroom."
+    play sound audio.heartbeat
+    scene black
+    with slowfade
+    $ renpy.pause(0.6)
+    return
+
+label ch6_forest_explore:
+    $ ch6_forest_leave = False
+    while not ch6_forest_leave:
+        call screen investigate(hotspots=ch6_forest_hotspots, prompt="The forest is dreaming you back toward the house.")
+        if _return == "leave":
+            $ ch6_forest_leave = True
+        else:
+            $ ch6_spot = ch6_forest_hotspots[_return]
+            call expression ch6_spot["label"]
+    return
+
+label ch6_forest_carving:
+    scene bg forest
+    with dissolve
+    if has_clue("forest_carving"):
+        "The carved eye is still open. It follows you when you turn away."
+        return
+    "An eye is carved into the trunk of a black tree. The cuts are old and child-sized."
+    "Inside the pupil, someone has scratched your initials."
+    $ add_clue("forest_carving")
+    $ change_sanity(-4)
+    $ change_attention(1)
+    return
+
+label ch6_forest_thread:
+    scene bg forest
+    with dissolve
+    if has_clue("forest_thread"):
+        "The red thread is still tied around the branch. It is shorter than it was."
+        return
+    "A length of red thread is tied around a black branch."
+    "It runs between the trees and disappears toward Ashgrove Street."
+    "When you touch it, the thread is warm."
+    $ add_clue("forest_thread")
+    $ add_item("red_thread", silent=True)
+    $ change_iris_bond(1)
+    return
+
+label ch6_forest_footprints:
+    scene bg forest
+    with dissolve
+    if has_clue("forest_footprints"):
+        "The footprints are still there. They still do not lead away."
+        return
+    "Small bare footprints cross the mud."
+    "They circle the tree, stop at the hollow, and never come out again."
+    $ add_clue("forest_footprints")
+    $ change_sanity(-4)
+    $ change_iris_bond(1)
+    return
+
+label ch6_forest_hollow:
+    scene bg forest
+    with dissolve
+    if has_clue("forest_hollow"):
+        "The hollow smells of oranges. Something inside it is breathing very slowly."
+        return
+    "A hollow beneath the roots is just large enough for a child."
+    "The wood inside is warm. It smells faintly of oranges."
+    "You do not put your hand inside. You are not sure you could pull it back out."
+    $ add_clue("forest_hollow")
+    $ change_sanity(-5)
+    $ change_iris_bond(1)
+    return
+
+label ch6_survival:
+    $ ch6_survival_failures = 0
+    $ ch6_hide_round = 0
+    while ch6_hide_round < 3:
+        $ ch6_hide_round += 1
+        $ ch6_hide_round_data = ch6_hide_rounds[ch6_hide_round - 1]
+        $ ch6_hide_result = renpy.call_screen("survival_hide", cue=ch6_hide_round_data["cue"], round_number=ch6_hide_round, limit=8.0)
+        if ch6_hide_result == ch6_hide_round_data["correct"]:
+            $ change_sanity(2)
+            "You keep still. It passes close enough to stir the dust."
+        else:
+            $ ch6_survival_failures += 1
+            $ change_sanity(-7)
+            $ change_attention(2)
+            play sound audio.breathing
+            "It stops beside you. You hear it deciding."
+            "Then it moves on."
+
+    if ch6_survival_failures == 0:
+        $ survived_entity = True
+        $ add_clue("survived_stalker")
+        $ change_sanity(4)
+        "You wait until the basement is completely silent. Then you breathe."
+    elif ch6_survival_failures == 1:
+        $ change_sanity(-4)
+        "It finds the edge of your hiding place. It does not find you."
+        "When it leaves, you count to one hundred before moving."
+    else:
+        $ change_attention(3)
+        play sound audio.jumpscare
+        with vpunch
+        "It finds you. For one long second, it wears your face."
+        "Then it is gone, and you are on the stairs with your hands over your mouth."
     return
 
 label ch6_hallway:
