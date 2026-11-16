@@ -11,7 +11,7 @@
     "downloadUrl": "/downloads/DontLookBehindYou-Android-v1.0.1.apk",
     "archivePath": "release/android/DontLookBehindYou-Android-v1.0.1.apk",
     "fileSize": "126.5 MiB",
-    "sha256": "643514add821cb13e228c61bbb8cb2f138de6098abba9c83024098ee71183057",
+    "sha256": "1484a73281427436e7a127be913e02c1ceb64041b1a5325aa8f48fefbfcded11",
     "package": "com.dontlookbehindyou.game",
     "architecture": "Universal APK (arm64-v8a, armeabi-v7a, x86_64)",
     "format": "APK",
